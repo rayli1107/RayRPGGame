@@ -5,10 +5,20 @@ namespace StateMachine
 {
     public class AbstractPlayerMoveState : AbstractPlayerState
     {
+        private enum AttackState
+        {
+            NONE,
+            PRE_ATTACK,
+            POST_ATTACK
+        }
+
         private int _animatorParameterIdMoveX;
         private int _animatorParameterIdMoveZ;
         private int _animatorParameterIdAttack;
         private int _animatorParameterIdGuard;
+        private int _animatorStateIdAttacking;
+        private AttackState _attackState;
+        private const float _attackTimeThreshold = 0.4f;
 
         public AbstractPlayerMoveState(PlayerStateMachine stateMachine) : base (stateMachine)
         {
@@ -16,6 +26,7 @@ namespace StateMachine
             _animatorParameterIdMoveZ = Animator.StringToHash("MoveZ");
             _animatorParameterIdAttack = Animator.StringToHash("Attack");
             _animatorParameterIdGuard = Animator.StringToHash("Guard");
+            _animatorStateIdAttacking = Animator.StringToHash("Attack2");
         }
 
         protected void setMoveAnimation(float x, float z)
@@ -24,17 +35,40 @@ namespace StateMachine
             controller.animator.SetFloat(_animatorParameterIdMoveZ, z);
         }
 
+        public override void EnterState(StateMachineParameter param)
+        {
+            base.EnterState(param);
+            _attackState = AttackState.NONE;
+        }
+
         public override void Update()
         {
             base.Update();
+            const int layerId = 1;
 
-            if (controller.actionAttack.triggered)
+            if (controller.actionAttack.triggered &&
+                _attackState == AttackState.NONE &&
+                controller.TryAttack())
             {
+                _attackState = AttackState.PRE_ATTACK;
                 controller.animator.SetTrigger(_animatorParameterIdAttack);
             }
 
-            controller.animator.SetBool(
-                _animatorParameterIdGuard, controller.actionDefend.ReadValue<float>() > 0.5f);
+            AnimatorStateInfo stateInfo = controller.animator.GetCurrentAnimatorStateInfo(layerId);
+            if (_attackState == AttackState.PRE_ATTACK &&
+                stateInfo.shortNameHash == _animatorStateIdAttacking &&
+                stateInfo.normalizedTime >= _attackTimeThreshold)
+            {
+                controller.Attack();
+                _attackState = AttackState.POST_ATTACK;
+            }
+
+            if (_attackState == AttackState.POST_ATTACK && stateInfo.shortNameHash != _animatorStateIdAttacking)
+            {
+                _attackState = AttackState.NONE;
+            }
+
+            controller.animator.SetBool(_animatorParameterIdGuard, controller.isGuarding);
         }
 
         public override void ExitState()

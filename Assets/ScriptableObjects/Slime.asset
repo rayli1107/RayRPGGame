@@ -16,3 +16,4 @@ MonoBehaviour:
   hp: 4
   damage: 2
   canFlinch: 1
+  exp: 1

@@ -88,7 +88,7 @@ public class PlayerGameUnit : BaseGameUnit
         name = "Hero";
         maxHp = 20;
         hp = 20;
-        maxStamina = 20;
+        maxStamina = 10;
         stamina = maxStamina;
         attack = 2;
         exp = 0;

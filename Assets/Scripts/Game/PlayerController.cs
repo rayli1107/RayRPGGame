@@ -12,7 +12,8 @@ public class PlayerController : GameUnitController
     private float _staminaRegenSpeed = 0.5f;
     [SerializeField]
     private float _staminaDrainSpeedWhenGuarding = 0.5f;
-
+    [SerializeField]
+    private int _attackStamina = 1;
     public Collider attackHitBox => _attackHitBox;
 
     private PlayerGameUnit _playerData => GlobalGameData.Instance.PlayerData;
@@ -144,4 +145,21 @@ public class PlayerController : GameUnitController
         stateMachine.ChangeState(stateMachine.PlayerFlinchState);
     }
 
+    public void Attack()
+    {
+        foreach (EnemyController enemy in _currentAttackTargets)
+        {
+            enemy.OnHit(_playerData.attack);
+        }
+    }
+
+    public bool TryAttack()
+    {
+        if (_playerData.stamina >= _attackStamina)
+        {
+            _playerData.stamina -= _attackStamina;
+            return true;
+        }
+        return false;
+    }
 }

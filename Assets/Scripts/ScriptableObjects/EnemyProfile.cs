@@ -11,5 +11,6 @@ namespace ScriptableObjects
         public int hp;
         public int damage;
         public bool canFlinch;
+        public int exp;
     }
 }

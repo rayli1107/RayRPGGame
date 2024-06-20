@@ -40,7 +40,7 @@ public class PlayerUIController : MonoBehaviour
         if (_sliderStamina.maxValue != _playerData.maxStamina)
         {
             RectTransform rt = _sliderStamina.GetComponent<RectTransform>();
-            rt.sizeDelta = new Vector2(_playerData.maxStamina * 10, rt.sizeDelta.y);
+            rt.sizeDelta = new Vector2(_playerData.maxStamina * 20, rt.sizeDelta.y);
             _sliderStamina.maxValue = _playerData.maxStamina;
         }
         _sliderStamina.value = _playerData.stamina;

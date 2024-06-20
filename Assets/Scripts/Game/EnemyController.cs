@@ -112,7 +112,14 @@ public class EnemyController : GameUnitController
     public void OnHit(int damage)
     {
         gameUnit.hp -= damage;
-        stateMachine.ChangeState(stateMachine.EnemyFlinchedState);
+        if (gameUnit.hp == 0)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            stateMachine.ChangeState(stateMachine.EnemyFlinchedState);
+        }
     }
 
     /*
