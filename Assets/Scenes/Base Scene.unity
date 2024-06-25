@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 475107611}
   - component: {fileID: 475107610}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: BaseSceneController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -152,8 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d5d624286f28114bb0583e38fb5fc4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerName: Hero
-  _playerStartingHP: 10
+  _playerProfile: {fileID: 11400000, guid: 6df34e6230069b0429d1bf225b6ed031, type: 2}
   _startingScene: Village
   _startingPosition: {x: 0, y: 0, z: -5}
   _startingRotation: {x: 0, y: 1, z: 0, w: 0}

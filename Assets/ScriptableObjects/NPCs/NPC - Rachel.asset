@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0124f12bcc45fb74d891386e831cdadc, type: 3}
+  m_Name: NPC - Rachel
+  m_EditorClassIdentifier: 
+  <id>k__BackingField: e69b3a28-3513-432c-88a3-4598c88951b5
+  <name>k__BackingField: Rachel
+  <face>k__BackingField: {fileID: 21300000, guid: 11e6d51ff1e1092439640811522d9693, type: 3}
+  <behaviourEntries>k__BackingField:
+  - <priority>k__BackingField: 0
+    <prerequisite>k__BackingField:
+      _prerequisiteType: 0
+      _stringFields: []
+      _intFields: 
+    <actions>k__BackingField:
+    - _actionType: 0
+      _stringFields:
+      - Hello how are you?
+      _objectFields: []
+      objectFields: []
+    - _actionType: 1
+      _stringFields:
+      - Good, you?
+      _objectFields: []
+      objectFields: []

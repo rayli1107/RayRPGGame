@@ -2,7 +2,7 @@
     "name": "Player Control",
     "maps": [
         {
-            "name": "Overworld",
+            "name": "Player",
             "id": "0fb64554-5651-4ec4-9b19-8dc764163bba",
             "actions": [
                 {
@@ -148,6 +148,34 @@
                     "processors": "",
                     "groups": "",
                     "action": "Defend",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "UI",
+            "id": "62585214-8c85-4746-9f44-e029f5dd710f",
+            "actions": [
+                {
+                    "name": "Confirm",
+                    "type": "Button",
+                    "id": "6ef52ba7-1b8e-4f8e-bb3b-0c6962cb02fa",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "3bb8f2fb-2960-414d-af9c-328814741e8b",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Confirm",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

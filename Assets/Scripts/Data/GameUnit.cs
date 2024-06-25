@@ -7,13 +7,6 @@ public class BaseGameUnit
 {
     public Action updateAction;
 
-    private string _name;
-    public string name
-    {
-        get => _name;
-        set { _name = value; updateAction?.Invoke(); }
-    }
-
     private int _maxHp;
     public int maxHp
     {
@@ -38,17 +31,24 @@ public class BaseGameUnit
         set { _attack = value; updateAction?.Invoke(); }
     }
 
-    public BaseGameUnit(EnemyProfile enemyProfile)
-    {
-        name = enemyProfile.enemyName;
-        maxHp = enemyProfile.hp;
-        hp = enemyProfile.hp;
-        attack = enemyProfile.damage;
-    }
-
     public BaseGameUnit()
     {
     }
+}
+
+[Serializable]
+public class EnemyGameUnit : BaseGameUnit
+{
+    public int exp { get; private set; }
+
+    public EnemyGameUnit(EnemyProfile enemyProfile) : base()
+    {
+        maxHp = enemyProfile.hp;
+        hp = enemyProfile.hp;
+        attack = enemyProfile.damage;
+        exp = enemyProfile.exp;
+    }
+
 }
 
 [Serializable]
@@ -76,23 +76,21 @@ public class PlayerGameUnit : BaseGameUnit
         set { _exp = value; updateAction?.Invoke(); }
     }
 
-    private int _nextExp;
-    public int nextExp
+    private int _level;
+    public int level
     {
-        get => _nextExp;
-        set { _nextExp = value; updateAction?.Invoke(); }
+        get => _level;
+        set { _level = value; updateAction?.Invoke(); }
     }
 
-    public PlayerGameUnit() : base()
+    public PlayerGameUnit(PlayerProfile profile) : base()
     {
-        name = "Hero";
-        maxHp = 20;
-        hp = 20;
-        maxStamina = 10;
-        stamina = maxStamina;
-        attack = 2;
-        exp = 0;
-        nextExp = 5;
+        maxHp = profile.hp;
+        hp = profile.hp;
+        maxStamina = profile.stamina;
+        stamina = profile.stamina;
+        attack = profile.attack;
+        level = 1;
     }
 
 }

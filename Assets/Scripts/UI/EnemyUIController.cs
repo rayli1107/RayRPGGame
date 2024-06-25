@@ -10,8 +10,8 @@ public class EnemyUIController : MonoBehaviour
     [SerializeField]
     private Slider _sliderHP;
 
-    private BaseGameUnit _gameUnit;
-    public BaseGameUnit gameUnit
+    private EnemyGameUnit _gameUnit;
+    public EnemyGameUnit gameUnit
     {
         get => _gameUnit;
         set

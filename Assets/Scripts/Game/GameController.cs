@@ -12,6 +12,8 @@ public class GameController : MonoBehaviour
     private PlayerController _player;
     [SerializeField]
     private CinemachineVirtualCamera _camera;
+    [SerializeField]
+    private GameUIManager _uiManager;
 
     public static GameController Instance;
 
@@ -38,11 +40,13 @@ public class GameController : MonoBehaviour
             SceneUtil.LoadBaseScene();
             return;
         }
-
-        //        player = Instantiate(_prefabPlayer);
-        //        player.gameObject.SetActive(true);
-        _camera.Follow = player.transform;
-        _camera.LookAt = player.transform;
+        else
+        {
+            _camera.Follow = player.transform;
+            _camera.LookAt = player.transform;
+            _player.gameObject.SetActive(true);
+            _uiManager.gameObject.SetActive(true);
+        }
     }
 
     // Update is called once per frame

@@ -6,17 +6,26 @@ using UnityEngine;
 public class GameUIManager : MonoBehaviour
 {
     [SerializeField]
-    private GameObject _panelQuickMessage;
+    private RectTransform _panelQuickMessage;
     [SerializeField]
     private TextMeshProUGUI _textQuickMessage;
-
-    private float _quickMessageHideTime;
+    [SerializeField]
+    private RectTransform _panelModalBackground;
+    [SerializeField]
+    private RectTransform _panelPlayerMenu;
+    [SerializeField]
+    private MessageBoxController _messageBoxController;
 
     public static GameUIManager Instance;
+
+    private List<ModalObject> _modalObjects;
+    private float _quickMessageHideTime;
+    private float _timeScale;
 
     private void Awake()
     {
         Instance = this;
+        _modalObjects = new List<ModalObject>();
     }
 
     // Start is called before the first frame update
@@ -45,5 +54,41 @@ public class GameUIManager : MonoBehaviour
     public void HideQuickMessage()
     {
         _panelQuickMessage.gameObject.SetActive(false);
+    }
+
+    public void RegisterModalItem(ModalObject modalObject)
+    {
+        if (_modalObjects.Count == 0)
+        {
+            _timeScale = Time.timeScale;
+            Time.timeScale = 0;
+            GameController.Instance.player.playerInput.enabled = false;
+        }
+        _modalObjects.Add(modalObject);
+        _panelModalBackground.gameObject.SetActive(
+            _modalObjects.Exists(m => m.useBackground));
+    }
+
+    public void UnregisterModalItem(ModalObject modalObject)
+    {
+        _modalObjects.Remove(modalObject);
+        _panelModalBackground.gameObject.SetActive(
+            _modalObjects.Exists(m => m.useBackground));
+        if (_modalObjects.Count == 0)
+        {
+            Time.timeScale = _timeScale;
+            GameController.Instance.player.playerInput.enabled = true;
+        }
+    }
+
+    public void ShowMessageBox(
+        BaseGameUnitController gameUnit,
+        string message,
+        MessageBoxHandler handler=null)
+    {
+        _messageBoxController.gameUnit = gameUnit;
+        _messageBoxController.message = message;
+        _messageBoxController.messageBoxHandler = handler;
+        _messageBoxController.gameObject.SetActive(true);
     }
 }

@@ -25,6 +25,7 @@
         public EnemyChasingState EnemyChasingState { get; private set; }
         public EnemyAttackState EnemyAttackState { get; private set; }
         public EnemyFlinchedState EnemyFlinchedState { get; private set; }
+        public EnemyDeadState EnemyDeadState { get; private set; }
 
         public EnemyController enemyController { get; private set; }
 
@@ -38,6 +39,7 @@
             EnemyChasingState = new EnemyChasingState(this);
             EnemyAttackState = new EnemyAttackState(this);
             EnemyFlinchedState = new EnemyFlinchedState(this);
+            EnemyDeadState = new EnemyDeadState(this);
 
             currentState = EnemyIdleState;
         }
