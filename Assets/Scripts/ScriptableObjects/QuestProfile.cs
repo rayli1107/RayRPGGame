@@ -19,6 +19,9 @@ namespace ScriptableObjects
         public string journalEntry { get; private set; }
 
         [field: SerializeField]
+        public AutoIdScriptableObject[] relatedNpcs { get; private set; }
+
+        [field: SerializeField]
         public AutoIdScriptableObject[] objectFields { get; private set; }
 
         [field: SerializeField]
@@ -33,6 +36,9 @@ namespace ScriptableObjects
         menuName = "ScriptableObjects/Quest Profile")]
     public class QuestProfile : AutoIdScriptableObject
     {
+        [field: SerializeField]
+        public NPCProfile questGiver { get; private set; }
+
         [field: SerializeField]
         public QuestStageProfile[] questStages { get; private set; }
 

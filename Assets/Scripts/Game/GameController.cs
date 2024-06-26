@@ -35,7 +35,7 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (GlobalGameData.Instance == null)
+        if (GlobalDataManager.Instance == null)
         {
             SceneUtil.LoadBaseScene();
             return;
@@ -60,8 +60,8 @@ public class GameController : MonoBehaviour
         Vector3 position,
         Quaternion rotation)
     {
-        GlobalGameData.Instance.NextScenePlayerPosition = position;
-        GlobalGameData.Instance.NextScenePlayerRotation = rotation;
+        GlobalDataManager.Instance.NextScenePlayerPosition = position;
+        GlobalDataManager.Instance.NextScenePlayerRotation = rotation;
         SceneManager.LoadScene(sceneName);
     }
 }

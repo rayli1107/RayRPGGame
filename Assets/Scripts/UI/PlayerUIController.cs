@@ -14,7 +14,7 @@ public class PlayerUIController : MonoBehaviour
     [SerializeField]
     private Slider _sliderExp;
 
-    private PlayerGameUnit _playerData => GlobalGameData.Instance.gameData.playerData;
+    private PlayerGameUnit _playerData => GlobalDataManager.Instance.gameData.playerData;
     private PlayerController _player => GameController.Instance.player;
 
     private void OnEnable()

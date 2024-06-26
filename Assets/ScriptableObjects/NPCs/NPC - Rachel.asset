@@ -18,17 +18,32 @@ MonoBehaviour:
   <behaviourEntries>k__BackingField:
   - <priority>k__BackingField: 0
     <prerequisite>k__BackingField:
-      _prerequisiteType: 0
-      _stringFields: []
-      _intFields: 
+      <prerequisiteType>k__BackingField: 3
+      <stringFields>k__BackingField: []
+      <intFields>k__BackingField: 
+      <objectFields>k__BackingField: []
     <actions>k__BackingField:
-    - _actionType: 0
-      _stringFields:
-      - Hello how are you?
-      _objectFields: []
-      objectFields: []
-    - _actionType: 1
-      _stringFields:
-      - Good, you?
-      _objectFields: []
-      objectFields: []
+    - <actionType>k__BackingField: 0
+      <stringFields>k__BackingField:
+      - Hello
+      <objectFields>k__BackingField: []
+  - <priority>k__BackingField: 1
+    <prerequisite>k__BackingField:
+      <prerequisiteType>k__BackingField: 2
+      <stringFields>k__BackingField: []
+      <intFields>k__BackingField: 
+      <objectFields>k__BackingField:
+      - {fileID: 11400000, guid: 46f9672ccdc41824394bec07e2cee9d1, type: 2}
+    <actions>k__BackingField:
+    - <actionType>k__BackingField: 0
+      <stringFields>k__BackingField:
+      - Can you help me kill 3 slimes?
+      <objectFields>k__BackingField: []
+    - <actionType>k__BackingField: 1
+      <stringFields>k__BackingField:
+      - Sure!
+      <objectFields>k__BackingField: []
+    - <actionType>k__BackingField: 2
+      <stringFields>k__BackingField: []
+      <objectFields>k__BackingField:
+      - {fileID: 11400000, guid: 46f9672ccdc41824394bec07e2cee9d1, type: 2}

@@ -57,8 +57,9 @@ public class MessageBoxController : MonoBehaviour
         if (actionConfirm.WasReleasedThisFrame())
         {
             gameObject.SetActive(false);
-            messageBoxHandler?.Invoke();
+            MessageBoxHandler handler = messageBoxHandler;
             messageBoxHandler = null;
+            handler?.Invoke();
         }
     }
 }

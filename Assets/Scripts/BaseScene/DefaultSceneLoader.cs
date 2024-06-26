@@ -1,6 +1,8 @@
+/*
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEngine;
 
 [InitializeOnLoad]
 public static class DefaultSceneLoader
@@ -19,8 +21,10 @@ public static class DefaultSceneLoader
 
         if (state == PlayModeStateChange.EnteredPlayMode)
         {
+            Debug.Log("Entering Play Mode");
             UnityEngine.SceneManagement.SceneManager.LoadScene(0);
         }
     }
 }
 #endif
+*/

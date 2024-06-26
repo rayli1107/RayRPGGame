@@ -19,6 +19,7 @@ public class BaseSceneController : MonoBehaviour
     private Quaternion _startingRotation;
 
     public static BaseSceneController Instance;
+    private bool _started;
 
     private void Awake()
     {
@@ -28,9 +29,19 @@ public class BaseSceneController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GlobalGameData.Initialize(_playerProfile);
-        GlobalGameData.Instance.NextScenePlayerPosition = _startingPosition;
-        GlobalGameData.Instance.NextScenePlayerRotation = _startingRotation;
-        SceneManager.LoadScene(_startingScene);
+        _started = false;
+    }
+
+    private void Update()
+    {
+        if (!_started &&
+            QuestManager.Instance.initialized &&
+            GlobalDataManager.Instance.initialized)
+        {
+            _started = true;
+            GlobalDataManager.Instance.NextScenePlayerPosition = _startingPosition;
+            GlobalDataManager.Instance.NextScenePlayerRotation = _startingRotation;
+            SceneManager.LoadScene(_startingScene);
+        }
     }
 }

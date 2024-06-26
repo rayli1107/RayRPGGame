@@ -88,7 +88,6 @@ public class CameraController : MonoBehaviour
                             material.color = new Color(
                                 material.color.r, material.color.g, material.color.b, _fadeAlpha);
                         }
-                        Debug.Log(result.collider.gameObject);
             */
         }
     }

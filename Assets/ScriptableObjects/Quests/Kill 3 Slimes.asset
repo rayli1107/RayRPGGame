@@ -14,20 +14,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <id>k__BackingField: f2da1d99-a2a4-4516-9716-823d88894746
   <name>k__BackingField: Kill 3 Slimes!
+  <questGiver>k__BackingField: {fileID: 11400000, guid: de0d12685df1e234f96222788ebf21a8, type: 2}
   <questStages>k__BackingField:
   - <progressType>k__BackingField: 0
     <journalEntry>k__BackingField: Kill 3 Slimes
+    <relatedNpcs>k__BackingField: []
     <objectFields>k__BackingField:
     - {fileID: 11400000, guid: f956af4e42faf22498cf52f320e010aa, type: 2}
     <stringFields>k__BackingField: []
     <intFields>k__BackingField: 03000000
   - <progressType>k__BackingField: 1
     <journalEntry>k__BackingField: Return to Rachel
+    <relatedNpcs>k__BackingField:
+    - {fileID: 11400000, guid: de0d12685df1e234f96222788ebf21a8, type: 2}
     <objectFields>k__BackingField: []
     <stringFields>k__BackingField: []
     <intFields>k__BackingField: 
   - <progressType>k__BackingField: 1
     <journalEntry>k__BackingField: Quest Completed
+    <relatedNpcs>k__BackingField: []
     <objectFields>k__BackingField: []
     <stringFields>k__BackingField: []
     <intFields>k__BackingField: 

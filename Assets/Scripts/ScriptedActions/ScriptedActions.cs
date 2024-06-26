@@ -9,23 +9,21 @@ namespace ScriptedActions
     public enum ActionType
     {
         NPC_DIALOGUE,
-        PLAYER_DIALOGUE
+        PLAYER_DIALOGUE,
+        ADVANCE_QUEST,
     }
 
     [Serializable]
     public class ScriptedAction
     {
-        [SerializeField]
-        private ActionType _actionType;
-        public ActionType actionType => _actionType;
+        [field: SerializeField]
+        public ActionType actionType { get; private set; }
 
-        [SerializeField]
-        private string[] _stringFields;
-        public string[] stringFields => _stringFields;
+        [field: SerializeField]
+        public string[] stringFields { get; private set; }
 
-        [SerializeField]
-        private AutoIdScriptableObject[] _objectFields;
-        public AutoIdScriptableObject[] objectFields;
+        [field: SerializeField]
+        public AutoIdScriptableObject[] objectFields { get; private set; }
     }
 
     public class ScriptedActionUtil
@@ -43,6 +41,15 @@ namespace ScriptedActions
 
                 case ActionType.PLAYER_DIALOGUE:
                     runDialogueAction(GameController.Instance.player, action, 0, callback);
+                    break;
+
+                case ActionType.ADVANCE_QUEST:
+                    if (action.objectFields.Length > 0)
+                    {
+
+                        QuestManager.Instance.AdvanceQuest(action.objectFields[0].id);
+                        callback?.Invoke();
+                    }
                     break;
 
                 default:

@@ -39,7 +39,7 @@ public class PlayerStatusMenuController : MonoBehaviour
 
 
     private PlayerController _playerController => GameController.Instance.player;
-    private PlayerGameUnit _playerData => GlobalGameData.Instance.gameData.playerData;
+    private PlayerGameUnit _playerData => GlobalDataManager.Instance.gameData.playerData;
 
     private int _allocatedHP;
     private int _allocatedStamina;

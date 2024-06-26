@@ -99,6 +99,7 @@ public class EnemyController : BaseNPCGameUnitController
         if (gameUnit.hp <= 0)
         {
             player.GainExp(gameUnit.exp);
+            GlobalDataManager.Instance.gameData.RegisterMonsterKill(_enemyProfile.id);
             stateMachine.ChangeState(stateMachine.EnemyDeadState);
         }
         else

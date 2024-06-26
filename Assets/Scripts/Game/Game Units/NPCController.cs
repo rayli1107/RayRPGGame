@@ -12,6 +12,8 @@ public class NPCController : BaseNPCGameUnitController
     [field: SerializeField]
     public NPCProfile profile { get; private set; }
 
+
+
     public override Sprite face => profile.face;
     public override string name => profile.name;
 
@@ -41,7 +43,6 @@ public class NPCController : BaseNPCGameUnitController
 
     private void runAction(ScriptedBehaviourEntry entry, int index)
     {
-        Debug.Log("runAction: " + entry + " " + index + " " + entry.actions.Length);
         if (index >= entry.actions.Length)
         {
             return;

@@ -16,14 +16,14 @@ public class PlayerController : BaseNPCGameUnitController
     [SerializeField]
     private int _attackStamina = 1;
 
-    public PlayerProfile playerProfile => GlobalGameData.Instance.playerProfile;
+    public PlayerProfile playerProfile => GlobalDataManager.Instance.playerProfile;
     public override Sprite face => playerProfile.face;
     public override string name => playerProfile.name;
 
 
     public Collider attackHitBox => _attackHitBox;
 
-    private PlayerGameUnit _playerData => GlobalGameData.Instance.gameData.playerData;
+    private PlayerGameUnit _playerData => GlobalDataManager.Instance.gameData.playerData;
     public PlayerUIController playerUIController { get; private set; }
     public PlayerInput playerInput { get; private set; }
     public InputAction actionMove { get; private set; }

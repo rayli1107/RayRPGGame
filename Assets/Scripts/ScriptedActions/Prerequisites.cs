@@ -6,24 +6,26 @@ namespace ScriptedActions
 {
     public enum PrerequisiteType
     {
-        QUEST,
+        QUEST_COMPLETED,
+        QUEST_IN_PROGRESS,
+        QUEST_NOT_STARTED,
         NONE,
     }
 
     [Serializable]
     public class Prerequisite
     {
-        [SerializeField]
-        private PrerequisiteType _prerequisiteType;
-        public PrerequisiteType prerequisiteType => _prerequisiteType;
+        [field: SerializeField]
+        public PrerequisiteType prerequisiteType { get; private set; }
 
-        [SerializeField]
-        private string[] _stringFields;
-        public string[] stringFields => _stringFields;
+        [field: SerializeField]
+        public string[] stringFields { get; private set; }
 
-        [SerializeField]
-        private int[] _intFields;
-        public int[] intFields => _intFields;
+        [field: SerializeField]
+        public int[] intFields { get; private set; }
+
+        [field: SerializeField]
+        public AutoIdScriptableObject[] objectFields { get; private set; }
     }
 
     public class PrerequisiteUtil
@@ -32,6 +34,10 @@ namespace ScriptedActions
         {
             switch (entry.prerequisiteType)
             {
+                case PrerequisiteType.QUEST_NOT_STARTED:
+                    return entry.objectFields.Length > 0 &&
+                        QuestManager.Instance.IsQuestNotStarted(entry.objectFields[0].id);
+
                 case PrerequisiteType.NONE:
                     return true;
             }

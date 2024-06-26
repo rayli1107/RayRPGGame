@@ -7,6 +7,7 @@ public class BaseGameUnit
 {
     public Action updateAction;
 
+    [SerializeField]
     private int _maxHp;
     public int maxHp
     {
@@ -17,6 +18,7 @@ public class BaseGameUnit
         }
     }
 
+    [SerializeField]
     private int _hp;
     public int hp
     {
@@ -24,6 +26,7 @@ public class BaseGameUnit
         set { _hp = Mathf.Clamp(value, 0, maxHp); updateAction?.Invoke(); }
     }
 
+    [SerializeField]
     private int _attack;
     public int attack
     {
@@ -39,6 +42,7 @@ public class BaseGameUnit
 [Serializable]
 public class EnemyGameUnit : BaseGameUnit
 {
+    [field: SerializeField]
     public int exp { get; private set; }
 
     public EnemyGameUnit(EnemyProfile enemyProfile) : base()
@@ -54,7 +58,7 @@ public class EnemyGameUnit : BaseGameUnit
 [Serializable]
 public class PlayerGameUnit : BaseGameUnit
 {
-
+    [SerializeField]
     private int _maxStamina;
     public int maxStamina
     {
@@ -62,6 +66,7 @@ public class PlayerGameUnit : BaseGameUnit
         set { _maxStamina = value; stamina = stamina; }
     }
 
+    [SerializeField]
     private float _stamina;
     public float stamina
     {
@@ -69,6 +74,7 @@ public class PlayerGameUnit : BaseGameUnit
         set { _stamina = Mathf.Clamp(value, 0, maxStamina); updateAction?.Invoke(); }
     }
 
+    [SerializeField]
     private int _exp;
     public int exp
     {
@@ -76,6 +82,7 @@ public class PlayerGameUnit : BaseGameUnit
         set { _exp = value; updateAction?.Invoke(); }
     }
 
+    [SerializeField]
     private int _level;
     public int level
     {
