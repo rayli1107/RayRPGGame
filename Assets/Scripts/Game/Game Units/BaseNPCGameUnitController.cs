@@ -56,12 +56,6 @@ public class BaseNPCGameUnitController : BaseGameUnitController
 
     protected virtual void OnDisable()
     {
-/*
-        if (_inTrigger)
-        {
-            _inTrigger = false;
-            player.UnregisterTarget(characterController);
-        }*/
     }
 
     private void OnTriggerEnter(Collider other)
@@ -69,10 +63,6 @@ public class BaseNPCGameUnitController : BaseGameUnitController
         if (other == player.attackHitBox)
         {
             inTrigger = true;
-            /*
-            Debug.Log("OnTriggerEnter");
-            _inTrigger = true;
-            player.RegisterTarget(characterController);*/
         }
     }
 
@@ -81,10 +71,6 @@ public class BaseNPCGameUnitController : BaseGameUnitController
         if (other == player.attackHitBox)
         {
             inTrigger = false;
-            /*
-            Debug.Log("OnTriggerExit");
-            _inTrigger = false;
-            player.UnregisterTarget(characterController);*/
         }
     }
 }

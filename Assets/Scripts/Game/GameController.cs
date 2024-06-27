@@ -6,19 +6,14 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    [SerializeField]
-    private PlayerController _prefabPlayer;
-    [SerializeField]
-    private PlayerController _player;
-    [SerializeField]
-    private CinemachineVirtualCamera _camera;
-    [SerializeField]
-    private GameUIManager _uiManager;
+    [field: SerializeField]
+    public PlayerController player { get;  private set; }
+
+    [field: SerializeField]
+    public CinemachineVirtualCamera virtualCamera { get; private set; }
 
     public static GameController Instance;
 
-    //    public PlayerController player {get; private set;}
-    public PlayerController player => _player;
     public System.Random Random { get; private set; }
 
     private void Awake()
@@ -40,13 +35,9 @@ public class GameController : MonoBehaviour
             SceneUtil.LoadBaseScene();
             return;
         }
-        else
-        {
-            _camera.Follow = player.transform;
-            _camera.LookAt = player.transform;
-            _player.gameObject.SetActive(true);
-            _uiManager.gameObject.SetActive(true);
-        }
+
+        virtualCamera.Follow = player.transform;
+        virtualCamera.LookAt = player.transform;
     }
 
     // Update is called once per frame
@@ -60,6 +51,7 @@ public class GameController : MonoBehaviour
         Vector3 position,
         Quaternion rotation)
     {
+
         GlobalDataManager.Instance.NextScenePlayerPosition = position;
         GlobalDataManager.Instance.NextScenePlayerRotation = rotation;
         SceneManager.LoadScene(sceneName);

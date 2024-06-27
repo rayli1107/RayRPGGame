@@ -31,7 +31,7 @@ public class PlayerController : BaseNPCGameUnitController
     public InputAction actionAttack { get; private set; }
     public InputAction actionDefend { get; private set; }
 
-    public TriggerController currentTriggerController { get; private set; }
+    private List<TriggerController> _currentTriggers;
 
     private List<BaseNPCGameUnitController> _currentTargets;
 
@@ -41,7 +41,7 @@ public class PlayerController : BaseNPCGameUnitController
     protected override void Awake()
     {
         base.Awake();
-
+        
         playerUIController = GetComponent<PlayerUIController>();
         playerInput = GetComponent<PlayerInput>();
         actionMove = playerInput.actions["Move"];
@@ -52,6 +52,7 @@ public class PlayerController : BaseNPCGameUnitController
         //        transform.position = GlobalGameData.Instance.NextScenePlayerPosition;
 
         _currentTargets = new List<BaseNPCGameUnitController>();
+        _currentTriggers = new List<TriggerController>();
 
         stateMachine = new PlayerStateMachine(this);
     }
@@ -59,8 +60,13 @@ public class PlayerController : BaseNPCGameUnitController
     // Start is called before the first frame update
     void Start()
     {
-        currentTriggerController = null;
+        transform.position = GlobalDataManager.Instance.NextScenePlayerPosition;
+        SetRotation(GlobalDataManager.Instance.NextScenePlayerRotation);
+        characterController.enabled = true;
+
         stateMachine.Start();
+        _currentTargets.Clear();
+        _currentTriggers.Clear();
 
         PlayerUnitUIController unitUIController = GetComponent<PlayerUnitUIController>();
         if (unitUIController != null)
@@ -91,9 +97,9 @@ public class PlayerController : BaseNPCGameUnitController
             {
                 npc.RunBehaviour();
             }
-            else if (currentTriggerController != null)
+            else if (_currentTriggers.Count > 0)
             {
-                currentTriggerController.Invoke();
+                _currentTriggers[0].Invoke();
             }
         }
         /*
@@ -136,6 +142,7 @@ public class PlayerController : BaseNPCGameUnitController
         return null;
     }
 
+    /*
     private void OnTriggerEnter(Collider other)
     {
         TriggerController triggerController = other.GetComponent<TriggerController>();
@@ -161,7 +168,7 @@ public class PlayerController : BaseNPCGameUnitController
 
             GameUIManager.Instance.HideQuickMessage();
         }
-    }
+    }*/
 
     public void RegisterTarget(BaseNPCGameUnitController target)
     {
@@ -221,5 +228,37 @@ public class PlayerController : BaseNPCGameUnitController
     public void GainExp(int exp)
     {
         _playerData.exp += exp;
+    }
+
+    public bool hasTriggerController => _currentTriggers.Count > 0;
+    public TriggerController currentTriggerController => hasTriggerController ? _currentTriggers[0] : null;
+
+    public void RegisterTriggerController(TriggerController triggerController)
+    {
+        if (!_currentTriggers.Contains(triggerController))
+        {
+            _currentTriggers.Add(triggerController);
+            if (_currentTriggers.Count == 1 &&
+                triggerController.message.Length > 0)
+            {
+                GameUIManager.Instance.ShowQuickMessage(triggerController.message);
+            }
+        }
+    }
+
+    public void UnregisterTriggerController(TriggerController triggerController)
+    {
+        if (_currentTriggers.Remove(triggerController))
+        {
+            if (_currentTriggers.Count > 0 &&
+                _currentTriggers[0].message.Length > 0)
+            {
+                GameUIManager.Instance.ShowQuickMessage(_currentTriggers[0].message);
+            }
+            else
+            {
+                GameUIManager.Instance.HideQuickMessage();
+            }
+        }
     }
 }

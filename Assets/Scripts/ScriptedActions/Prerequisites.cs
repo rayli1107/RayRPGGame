@@ -32,11 +32,37 @@ namespace ScriptedActions
     {
         public static bool Check(Prerequisite entry)
         {
+            GameSessionData gameData = GlobalDataManager.Instance.gameData;
+
             switch (entry.prerequisiteType)
             {
                 case PrerequisiteType.QUEST_NOT_STARTED:
                     return entry.objectFields.Length > 0 &&
                         QuestManager.Instance.IsQuestNotStarted(entry.objectFields[0].id);
+
+                case PrerequisiteType.QUEST_IN_PROGRESS:
+                    bool result = false;
+                    if (entry.objectFields.Length >= 0)
+                    {
+                        string questId = entry.objectFields[0].id;
+                        QuestTracker questTracker = QuestManager.Instance.GetQuestProgress(questId);
+                        if (questTracker != null)
+                        {
+                            if (entry.intFields.Length > 0)
+                            {
+                                result = entry.intFields[0] == questTracker.questStage;
+                            }
+                            else
+                            {
+                                result = true;
+                            }
+                        }
+                    }
+                    return result;
+
+                case PrerequisiteType.QUEST_COMPLETED:
+                    return entry.objectFields.Length > 0 &&
+                        QuestManager.Instance.IsQuestCompleted(entry.objectFields[0].id);
 
                 case PrerequisiteType.NONE:
                     return true;

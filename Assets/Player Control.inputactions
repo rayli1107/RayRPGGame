@@ -180,6 +180,94 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Player Action Hotkeys",
+            "id": "11ea2ed8-7d1d-4f66-9552-d6211d1e05bc",
+            "actions": [
+                {
+                    "name": "Hotkey 4",
+                    "type": "Button",
+                    "id": "8815c1f6-8aca-47e5-9792-08da8fe3383c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Hotkey 3",
+                    "type": "Button",
+                    "id": "81527fa7-fa02-4fca-87ae-48493863c6d3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Hotkey 2",
+                    "type": "Button",
+                    "id": "2b10eeab-3494-41e4-ba09-b7fcf6fa85ed",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Hotkey 1",
+                    "type": "Button",
+                    "id": "9c61cc94-023a-4959-9ab6-b0b5572b685b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "adc3339f-8a23-4b72-b739-06ef9e9ea78a",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Hotkey 1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "264da09c-4f44-40f5-bbf2-552f9c315d2f",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Hotkey 2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7271fa44-c137-4809-a31e-695b84a1d72d",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Hotkey 3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fa439831-9981-460c-b6e6-cc8e3dec4dce",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Hotkey 4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

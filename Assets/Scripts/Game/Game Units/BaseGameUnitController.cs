@@ -21,6 +21,12 @@ public class BaseGameUnitController : MonoBehaviour
 
     protected virtual void Awake()
     {
+        if (GlobalDataManager.Instance == null)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
     }
@@ -55,5 +61,10 @@ public class BaseGameUnitController : MonoBehaviour
     {
         RotateTowards(target);
         MoveForward(multiplier);
+    }
+
+    public void SetRotation(Quaternion quaternion)
+    {
+        _animatorTansform.rotation = quaternion;
     }
 }

@@ -8,6 +8,8 @@ public class TriggerController : MonoBehaviour
     public virtual Sprite icon => null;
     public virtual Color iconColor => Color.white;
 
+    protected PlayerController player => GameController.Instance.player;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,4 +26,21 @@ public class TriggerController : MonoBehaviour
     {
 
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other == player.attackHitBox)
+        {
+            player.RegisterTriggerController(this);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other == player.attackHitBox)
+        {
+            player.UnregisterTriggerController(this);
+        }
+    }
+
 }

@@ -38,7 +38,7 @@ public class NpcUnitUIController : MonoBehaviour
     private void onQuestUpdate()
     {
         _iconQuestGiver.enabled = QuestManager.Instance.startQuestNpcs.ContainsKey(_npcId);
-        _iconQuestUpdate.enabled = false;
+        _iconQuestUpdate.enabled = QuestManager.Instance.relatedQuestNpcs.ContainsKey(_npcId);
     }
 
 }

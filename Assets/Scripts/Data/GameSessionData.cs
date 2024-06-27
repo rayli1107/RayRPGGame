@@ -90,6 +90,7 @@ public class GameSessionData
                     {
                         count = ++questTracker.intFields[0];
                     }
+
                     if (count >= stage.intFields[0])
                     {
                         QuestManager.Instance.AdvanceQuest(quest, questTracker);

@@ -37,7 +37,8 @@ public class CameraController : MonoBehaviour
     void Update()
     {
         float timeNow = Time.time;
-        if (timeNow - _lastRaycastTime > _raycastTimeout)
+        if (_cinemachineBrain.ActiveVirtualCamera != null &&
+            timeNow - _lastRaycastTime > _raycastTimeout)
         {
             checkForFadeOutObjects();
             _lastRaycastTime = timeNow;

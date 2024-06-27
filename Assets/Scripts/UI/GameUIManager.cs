@@ -24,6 +24,12 @@ public class GameUIManager : MonoBehaviour
 
     private void Awake()
     {
+        if (GlobalDataManager.Instance == null)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+
         Instance = this;
         _modalObjects = new List<ModalObject>();
     }

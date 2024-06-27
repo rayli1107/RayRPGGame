@@ -24,7 +24,7 @@ public class PlayerUnitUIController : MonoBehaviour
             _iconTalk.enabled = true;
             _iconNotice.enabled = false;
         }
-        else if (_player.currentTriggerController != null)
+        else if (_player.hasTriggerController)
         {
             _iconNotice.sprite = _player.currentTriggerController.icon;
             _iconNotice.color = _player.currentTriggerController.iconColor;

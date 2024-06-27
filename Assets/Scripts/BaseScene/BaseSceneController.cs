@@ -36,7 +36,8 @@ public class BaseSceneController : MonoBehaviour
     {
         if (!_started &&
             QuestManager.Instance.initialized &&
-            GlobalDataManager.Instance.initialized)
+            GlobalDataManager.Instance.initialized &&
+            PlayerActionManager.Instance != null)
         {
             _started = true;
             GlobalDataManager.Instance.NextScenePlayerPosition = _startingPosition;

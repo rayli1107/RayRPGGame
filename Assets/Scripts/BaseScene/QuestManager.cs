@@ -70,6 +70,7 @@ public class QuestManager : MonoBehaviour
             }
             ++questTracker.questStage;
         }
+
         foreach (AutoIdScriptableObject npc in quest.questStages[questTracker.questStage].relatedNpcs)
         {
             relatedQuestNpcs[npc.id] = quest;

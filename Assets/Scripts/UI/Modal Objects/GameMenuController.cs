@@ -21,6 +21,5 @@ public class GameMenuController : MonoBehaviour
 
     public void OnTabValueChange(Toggle toggle)
     {
-        Debug.Log("Tab: " + toggle + " " + toggle.isOn);
     }
 }

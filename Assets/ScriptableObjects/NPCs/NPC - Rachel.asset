@@ -47,3 +47,47 @@ MonoBehaviour:
       <stringFields>k__BackingField: []
       <objectFields>k__BackingField:
       - {fileID: 11400000, guid: 46f9672ccdc41824394bec07e2cee9d1, type: 2}
+  - <priority>k__BackingField: 2
+    <prerequisite>k__BackingField:
+      <prerequisiteType>k__BackingField: 1
+      <stringFields>k__BackingField: []
+      <intFields>k__BackingField: 01000000
+      <objectFields>k__BackingField:
+      - {fileID: 11400000, guid: 46f9672ccdc41824394bec07e2cee9d1, type: 2}
+    <actions>k__BackingField:
+    - <actionType>k__BackingField: 0
+      <stringFields>k__BackingField:
+      - Wow, you killed them all! Thanks!
+      <objectFields>k__BackingField: []
+    - <actionType>k__BackingField: 1
+      <stringFields>k__BackingField:
+      - You're welcome!
+      <objectFields>k__BackingField: []
+    - <actionType>k__BackingField: 2
+      <stringFields>k__BackingField: []
+      <objectFields>k__BackingField:
+      - {fileID: 11400000, guid: 46f9672ccdc41824394bec07e2cee9d1, type: 2}
+  - <priority>k__BackingField: 1
+    <prerequisite>k__BackingField:
+      <prerequisiteType>k__BackingField: 1
+      <stringFields>k__BackingField: []
+      <intFields>k__BackingField: 
+      <objectFields>k__BackingField:
+      - {fileID: 11400000, guid: 46f9672ccdc41824394bec07e2cee9d1, type: 2}
+    <actions>k__BackingField:
+    - <actionType>k__BackingField: 0
+      <stringFields>k__BackingField:
+      - Let me know when you're done?
+      <objectFields>k__BackingField: []
+  - <priority>k__BackingField: 1
+    <prerequisite>k__BackingField:
+      <prerequisiteType>k__BackingField: 0
+      <stringFields>k__BackingField: []
+      <intFields>k__BackingField: 
+      <objectFields>k__BackingField:
+      - {fileID: 11400000, guid: 46f9672ccdc41824394bec07e2cee9d1, type: 2}
+    <actions>k__BackingField:
+    - <actionType>k__BackingField: 0
+      <stringFields>k__BackingField:
+      - Thanks again!
+      <objectFields>k__BackingField: []

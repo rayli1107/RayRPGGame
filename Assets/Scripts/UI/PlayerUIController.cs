@@ -17,15 +17,29 @@ public class PlayerUIController : MonoBehaviour
     private PlayerGameUnit _playerData => GlobalDataManager.Instance.gameData.playerData;
     private PlayerController _player => GameController.Instance.player;
 
+    private void Awake()
+    {
+        if (GlobalDataManager.Instance == null)
+        {
+            enabled = false;
+        }
+    }
+
     private void OnEnable()
     {
-        _playerData.updateAction += onStatUpdate;
+        if (GlobalDataManager.Instance != null)
+        {
+            _playerData.updateAction += onStatUpdate;
+        }
         onStatUpdate();
     }
 
     private void OnDisable()
     {
-        _playerData.updateAction -= onStatUpdate;
+        if (GlobalDataManager.Instance != null)
+        {
+            _playerData.updateAction -= onStatUpdate;
+        }
     }
 
     private void Update()
