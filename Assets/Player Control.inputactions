@@ -33,15 +33,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Attack",
-                    "type": "Button",
-                    "id": "06693ecb-f608-45db-b51c-28c45352f97a",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Defend",
                     "type": "Button",
                     "id": "796a381c-b3f2-4982-9555-5d2e802a2030",
@@ -131,17 +122,6 @@
                 },
                 {
                     "name": "",
-                    "id": "dedbf0f2-cc3e-400b-bc59-77084ac77f04",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Attack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "568c6c42-dfef-4fde-a439-7926429871bb",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
@@ -220,6 +200,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Attack",
+                    "type": "Button",
+                    "id": "ed5b586d-e71a-440a-9192-6cf4da3880a5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -264,6 +253,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Hotkey 4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "032b43e6-eb93-486a-acb1-ce2c0c64103c",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Attack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

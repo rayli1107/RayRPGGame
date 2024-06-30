@@ -139,4 +139,12 @@ public class EnemyController : BaseNPCGameUnitController
         return delta.magnitude >= _chaseDistance;
     }*/
 
+    protected override void OnTriggerEnter(Collider other)
+    {
+        base.OnTriggerEnter(other);
+        if (other == player.spinAttackHitBox)
+        {
+            OnHit(GlobalDataManager.Instance.gameData.playerData.attack);
+        }
+    }
 }

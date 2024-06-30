@@ -46,12 +46,20 @@ namespace StateMachine
             base.Update();
             const int layerId = 1;
 
-            if (controller.actionAttack.triggered &&
-                _attackState == AttackState.NONE &&
-                controller.TryAttack())
+            if (_attackState == AttackState.NONE &&
+                controller.playerTriggeredAction != null)
             {
-                _attackState = AttackState.PRE_ATTACK;
-                controller.animator.SetTrigger(_animatorParameterIdAttack);
+                switch (controller.playerTriggeredAction.actionType)
+                {
+                    case PlayerTriggeredActionType.ATTACK:
+                        _attackState = AttackState.PRE_ATTACK;
+                        controller.animator.SetTrigger(_animatorParameterIdAttack);
+                        break;
+
+                    case PlayerTriggeredActionType.SPIN_ATTACK:
+                        stateMachine.ChangeState(stateMachine.SpinAttackSkillState);
+                        break;
+                }
             }
 
             AnimatorStateInfo stateInfo = controller.animator.GetCurrentAnimatorStateInfo(layerId);

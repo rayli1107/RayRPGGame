@@ -58,7 +58,7 @@ public class BaseNPCGameUnitController : BaseGameUnitController
     {
     }
 
-    private void OnTriggerEnter(Collider other)
+    protected virtual void OnTriggerEnter(Collider other)
     {
         if (other == player.attackHitBox)
         {
@@ -66,7 +66,7 @@ public class BaseNPCGameUnitController : BaseGameUnitController
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    protected virtual void OnTriggerExit(Collider other)
     {
         if (other == player.attackHitBox)
         {

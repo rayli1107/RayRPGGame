@@ -7,21 +7,22 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : BaseNPCGameUnitController
 {
-    [SerializeField]
-    private Collider _attackHitBox;
-    [SerializeField]
-    private float _staminaRegenSpeed = 0.5f;
-    [SerializeField]
-    private float _staminaDrainSpeedWhenGuarding = 0.5f;
-    [SerializeField]
-    private int _attackStamina = 1;
+    [field: SerializeField]
+    public Collider attackHitBox { get; private set; }
+
+    [field: SerializeField]
+    public Collider spinAttackHitBox { get; private set; }
+
+    [field: SerializeField]
+    public float staminaRegenSpeed { get; private set; }
+
+    [field: SerializeField]
+    public float staminaDrainSpeedWhenGuarding { get; private set; }
 
     public PlayerProfile playerProfile => GlobalDataManager.Instance.playerProfile;
     public override Sprite face => playerProfile.face;
     public override string name => playerProfile.name;
 
-
-    public Collider attackHitBox => _attackHitBox;
 
     private PlayerGameUnit _playerData => GlobalDataManager.Instance.gameData.playerData;
     public PlayerUIController playerUIController { get; private set; }
@@ -36,6 +37,8 @@ public class PlayerController : BaseNPCGameUnitController
     private List<BaseNPCGameUnitController> _currentTargets;
 
     public PlayerStateMachine stateMachine;
+
+    public PlayerActionController playerTriggeredAction;
 
     public bool isGuarding { get; private set; }
     protected override void Awake()
@@ -78,14 +81,17 @@ public class PlayerController : BaseNPCGameUnitController
     // Update is called once per frame
     void Update()
     {
+        playerTriggeredAction = null;
+        PlayerActionManager.Instance.RunActions(this);
+
         isGuarding = actionDefend.ReadValue<float>() > 0.5f;
         if (isGuarding)
         {
-            _playerData.stamina -= _staminaDrainSpeedWhenGuarding * Time.deltaTime;
+            _playerData.stamina -= staminaDrainSpeedWhenGuarding * Time.deltaTime;
         }
         else
         {
-            _playerData.stamina += _staminaRegenSpeed * Time.deltaTime;
+            _playerData.stamina += staminaRegenSpeed * Time.deltaTime;
 
         }
         stateMachine.Update();
@@ -215,11 +221,11 @@ public class PlayerController : BaseNPCGameUnitController
         }
     }
 
-    public bool TryAttack()
+    public bool TryAction(int staminaCost)
     {
-        if (_playerData.stamina >= _attackStamina)
+        if (_playerData.stamina >= staminaCost)
         {
-            _playerData.stamina -= _attackStamina;
+            _playerData.stamina -= staminaCost;
             return true;
         }
         return false;
@@ -260,5 +266,10 @@ public class PlayerController : BaseNPCGameUnitController
                 GameUIManager.Instance.HideQuickMessage();
             }
         }
+    }
+
+    public void EnableSpinAttackHitBox(bool enable)
+    {
+        spinAttackHitBox.enabled = enable;
     }
 }
