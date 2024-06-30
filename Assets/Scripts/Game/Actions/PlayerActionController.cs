@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,9 @@ public enum PlayerTriggeredActionType
 
 public class PlayerActionController : MonoBehaviour
 {
+    [HideInInspector]
+    public Action updateAction;
+
     [field: SerializeField]
     public Sprite sprite { get; private set; }
 
@@ -27,13 +31,29 @@ public class PlayerActionController : MonoBehaviour
     [field: SerializeField]
     public int damage { get; private set; }
 
-    private bool _isTriggered;
+    private float _cooldownRemaining;
+    public float cooldownRemaining
+    {
+        get => _cooldownRemaining;
+        set
+        {
+            _cooldownRemaining = value;
+            updateAction?.Invoke();
+        }
+    }
 
+    private PlayerGameUnit _playerData => GlobalDataManager.Instance.gameData.playerData;
+    public bool available => _cooldownRemaining <= 0f && staminaCost <= _playerData.stamina;
+
+    private bool _isTriggered;
 
 
     public void Trigger()
     {
-        _isTriggered = true;
+        if (available)
+        {
+            _isTriggered = true;
+        }
     }
 
     private bool getAndResetTrigger()
@@ -54,5 +74,15 @@ public class PlayerActionController : MonoBehaviour
     protected virtual void Invoke(PlayerController player)
     {
 
+    }
+
+    public void EnterCooldown()
+    {
+        cooldownRemaining = coolDown;
+    }
+
+    private void Update()
+    {
+        cooldownRemaining = Mathf.Max(cooldownRemaining - Time.deltaTime, 0f);
     }
 }

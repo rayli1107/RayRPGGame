@@ -7,14 +7,24 @@ public class GameUIManager : MonoBehaviour
 {
     [SerializeField]
     private RectTransform _panelQuickMessage;
+
     [SerializeField]
     private TextMeshProUGUI _textQuickMessage;
+
     [SerializeField]
     private RectTransform _panelModalBackground;
+
     [SerializeField]
     private RectTransform _panelPlayerMenu;
+
     [SerializeField]
     private MessageBoxController _messageBoxController;
+
+    [SerializeField]
+    private RectTransform _playerActionHotkeyPanel;
+
+    [SerializeField]
+    private PlayerActionUIController _prefabPlayerActionUIController;
 
     public static GameUIManager Instance;
 
@@ -32,6 +42,15 @@ public class GameUIManager : MonoBehaviour
 
         Instance = this;
         _modalObjects = new List<ModalObject>();
+
+        for (int i = 0; i < PlayerActionManager.Instance.playerHotkeyActions.Length; ++i)
+        {
+            PlayerActionUIController controller = Instantiate(
+                _prefabPlayerActionUIController, _playerActionHotkeyPanel.transform);
+            controller.playerActionIndex = i;
+            controller.playerAction = PlayerActionManager.Instance.playerHotkeyActions[i];
+            controller.gameObject.SetActive(true);
+        }
     }
 
     // Start is called before the first frame update

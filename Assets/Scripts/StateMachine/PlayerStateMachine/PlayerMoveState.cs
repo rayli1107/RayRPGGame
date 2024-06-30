@@ -60,6 +60,7 @@ namespace StateMachine
                         stateMachine.ChangeState(stateMachine.SpinAttackSkillState);
                         break;
                 }
+                controller.playerTriggeredAction.EnterCooldown();
             }
 
             AnimatorStateInfo stateInfo = controller.animator.GetCurrentAnimatorStateInfo(layerId);

@@ -32,9 +32,6 @@ public class EnemyController : BaseNPCGameUnitController
     [SerializeField]
     private float _noticeDistance = 5f;
 
-    private int _animatorParameterIdMove;
-    private int _animatorParameterIdAttack;
-
     public Vector3 initialPosition { get; private set; }
     public EnemyStateMachine stateMachine { get; private set; }
 

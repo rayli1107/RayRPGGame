@@ -30,7 +30,6 @@ public class PlayerActionManager : MonoBehaviour
         for (int i = 0; i < playerHotkeyActions.Length; ++i)
         {
             InputAction inputAction = playerInput.actions[string.Format("Hotkey {0}", i + 1)];
-            Debug.Log(inputAction);
             _inputHotkeyActions.Add(inputAction);
         }
 
