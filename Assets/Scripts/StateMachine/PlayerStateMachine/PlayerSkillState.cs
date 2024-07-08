@@ -14,6 +14,7 @@ namespace StateMachine
         public override void EnterState(StateMachineParameter param)
         {
             base.EnterState(param);
+            controller.RegisterAttackHitContext(false);
             controller.EnableSpinAttackHitBox(true);
         }
 

@@ -3,125 +3,139 @@ using UnityEngine.InputSystem;
 
 namespace StateMachine
 {
-    public class AbstractPlayerMoveState : AbstractPlayerState
+    public class PlayerRollState : AbstractPlayerState
     {
-        private enum AttackState
-        {
-            NONE,
-            PRE_ATTACK,
-            POST_ATTACK
-        }
+        private int _animatorStateIdRoll;
+        private bool _isRolling;
 
-        private int _animatorParameterIdMoveX;
-        private int _animatorParameterIdMoveZ;
-        private int _animatorParameterIdAttack;
-        private int _animatorParameterIdGuard;
-        private int _animatorStateIdAttacking;
-        private AttackState _attackState;
-        private const float _attackTimeThreshold = 0.4f;
-
-        public AbstractPlayerMoveState(PlayerStateMachine stateMachine) : base (stateMachine)
+        public PlayerRollState(PlayerStateMachine stateMachine) : base(stateMachine)
         {
-            _animatorParameterIdMoveX = Animator.StringToHash("MoveX");
-            _animatorParameterIdMoveZ = Animator.StringToHash("MoveZ");
-            _animatorParameterIdAttack = Animator.StringToHash("Attack");
-            _animatorParameterIdGuard = Animator.StringToHash("Guard");
-            _animatorStateIdAttacking = Animator.StringToHash("Attack2");
-        }
-
-        protected void setMoveAnimation(float x, float z)
-        {
-            controller.animator.SetFloat(_animatorParameterIdMoveX, x);
-            controller.animator.SetFloat(_animatorParameterIdMoveZ, z);
+            _animatorStateIdRoll = Animator.StringToHash("Blend Tree - Roll");
         }
 
         public override void EnterState(StateMachineParameter param)
         {
             base.EnterState(param);
-            _attackState = AttackState.NONE;
+            _isRolling = false;
+            controller.animator.SetTrigger(animatorParameterIdRoll);
+            PlayerActionManager.Instance.playerRollAction.FinishInvoke(controller);
         }
 
         public override void Update()
         {
             base.Update();
-            const int layerId = 1;
 
-            if (_attackState == AttackState.NONE &&
-                controller.playerTriggeredAction != null)
+            bool _ = controller.actionAction.triggered;
+            AnimatorStateInfo stateInfo = 
+                controller.animator.GetCurrentAnimatorStateInfo(idBaseLayer);
+            if (_isRolling && stateInfo.shortNameHash != _animatorStateIdRoll)
             {
-                switch (controller.playerTriggeredAction.actionType)
-                {
-                    case PlayerTriggeredActionType.ATTACK:
-                        _attackState = AttackState.PRE_ATTACK;
-                        controller.animator.SetTrigger(_animatorParameterIdAttack);
-                        break;
-
-                    case PlayerTriggeredActionType.SPIN_ATTACK:
-                        stateMachine.ChangeState(stateMachine.SpinAttackSkillState);
-                        break;
-                }
-                controller.playerTriggeredAction.EnterCooldown();
+                stateMachine.ChangeState(stateMachine.PlayerFreeMoveState);
             }
-
-            AnimatorStateInfo stateInfo = controller.animator.GetCurrentAnimatorStateInfo(layerId);
-            if (_attackState == AttackState.PRE_ATTACK &&
-                stateInfo.shortNameHash == _animatorStateIdAttacking &&
-                stateInfo.normalizedTime >= _attackTimeThreshold)
+            else
             {
-                controller.Attack();
-                _attackState = AttackState.POST_ATTACK;
-            }
+                _isRolling = stateInfo.shortNameHash == _animatorStateIdRoll;
 
-            if (_attackState == AttackState.POST_ATTACK && stateInfo.shortNameHash != _animatorStateIdAttacking)
-            {
-                _attackState = AttackState.NONE;
+                Vector2 move = controller.UpdateAnimatorMoveBlend(Vector2.up);
+                controller.MoveForward(move);
             }
+        }
+    }
 
-            controller.animator.SetBool(_animatorParameterIdGuard, controller.isGuarding);
+    public class AbstractPlayerMoveState : AbstractPlayerState
+    {
+        public AbstractPlayerMoveState(PlayerStateMachine stateMachine) : base (stateMachine)
+        {
+        }
+
+        public override void EnterState(StateMachineParameter param)
+        {
+            base.EnterState(param);
+        }
+
+        public override void Update()
+        {
+            base.Update();
         }
 
         public override void ExitState()
         {
             base.ExitState();
-            setMoveAnimation(0, 0);
-            controller.animator.ResetTrigger(_animatorParameterIdAttack);
+            controller.animator.ResetTrigger(animatorParameterIdAttack);
         }
     }
     public class PlayerFreeMoveState : AbstractPlayerMoveState
     {
-        private float _currentAnimationBlend;
-        private float _currentAnimationVelocity;
-
         public PlayerFreeMoveState(PlayerStateMachine stateMachine) : base(stateMachine)
         {
-        }
-
-        public override void EnterState(StateMachineParameter param)
-        {
-            base.EnterState(param);
-            _currentAnimationBlend = 0;
-            _currentAnimationVelocity = 0;
         }
 
         public override void Update()
         {
             base.Update();
+
             Vector2 inputMove = controller.actionMove.ReadValue<Vector2>();
             float moveMagnitude = inputMove.magnitude;
             if (moveMagnitude > 0.01f)
             {
                 Vector3 delta = new Vector3(inputMove.x, 0, inputMove.y);
                 controller.RotateTowards(controller.transform.position + delta);
+                inputMove = controller.GetReflectedVector(inputMove);
             }
 
-            _currentAnimationBlend = Mathf.SmoothDamp(
-                _currentAnimationBlend,
-                moveMagnitude,
-                ref _currentAnimationVelocity,
-                controller.animationSmoothTime);
+            if (controller.actionAction.triggered)
+            {
+                TriggerController trigger = controller.currentTriggerController;
+                NPCController npc = controller.GetCurrentNPCTarget();
+                if (npc != null)
+                {
+                    npc.RunBehaviour();
+                    return;
+                }
+                else if (trigger != null)
+                {
+                    trigger.Invoke();
+                    return;
+                }
+            }
 
-            controller.MoveForward(_currentAnimationBlend);
-            setMoveAnimation(0, _currentAnimationBlend);
+            if (controller.playerTriggeredAction != null)
+            {
+                bool invoked = false;
+                switch (controller.playerTriggeredAction.actionType)
+                {
+                    case PlayerTriggeredActionType.ROLL:
+                        if (moveMagnitude > 0.01f)
+                        {
+                            invoked = true;
+                            stateMachine.ChangeState(stateMachine.PlayerRollState);
+                        }
+                        break;
+
+                    case PlayerTriggeredActionType.ATTACK:
+                        invoked = true;
+                        stateMachine.EnterPlayerAttackState(0);
+                        break;
+
+                    case PlayerTriggeredActionType.SPIN_ATTACK:
+                        invoked = true;
+                        stateMachine.ChangeState(stateMachine.SpinAttackSkillState);
+                        break;
+                }
+                if (invoked)
+                {
+                    if (controller.playerTriggeredAction.autoFinishInvoke)
+                    {
+                        controller.playerTriggeredAction.FinishInvoke(controller);
+                    }
+                    controller.playerTriggeredAction.EnterCooldown();
+                }
+            }
+
+            controller.animator.SetBool(animatorParameterIdGuard, controller.isGuarding);
+
+            Vector2 actualMove = controller.UpdateAnimatorMoveBlend(inputMove);
+            controller.MoveForward(actualMove);
         }
     }
 

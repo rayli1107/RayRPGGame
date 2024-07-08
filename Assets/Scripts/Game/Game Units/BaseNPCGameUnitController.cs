@@ -48,8 +48,14 @@ public class BaseNPCGameUnitController : BaseGameUnitController
         }
     }
 
-    protected virtual void OnEnable()
+    public BaseNPCGameUnitController() : base()
     {
+
+    }
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
         canTrigger = true;
         inTrigger = false;
     }
@@ -60,7 +66,7 @@ public class BaseNPCGameUnitController : BaseGameUnitController
 
     protected virtual void OnTriggerEnter(Collider other)
     {
-        if (other == player.attackHitBox)
+        if (other == player.targetCollider)
         {
             inTrigger = true;
         }
@@ -68,7 +74,7 @@ public class BaseNPCGameUnitController : BaseGameUnitController
 
     protected virtual void OnTriggerExit(Collider other)
     {
-        if (other == player.attackHitBox)
+        if (other == player.targetCollider)
         {
             inTrigger = false;
         }

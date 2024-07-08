@@ -29,7 +29,7 @@ public class TriggerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other == player.attackHitBox)
+        if (other == player.targetCollider)
         {
             player.RegisterTriggerController(this);
         }
@@ -37,7 +37,7 @@ public class TriggerController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other == player.attackHitBox)
+        if (other == player.targetCollider)
         {
             player.UnregisterTriggerController(this);
         }

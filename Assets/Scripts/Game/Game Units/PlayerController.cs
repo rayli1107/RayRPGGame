@@ -1,17 +1,55 @@
 using ScriptableObjects;
 using StateMachine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+public class PlayerAttackHitContext
+{
+    public int attackId;
+    public bool attackOnce;
+
+    public PlayerAttackHitContext()
+    {
+        attackId = 0;
+    }
+}
+
+[Serializable]
+public class PlayerAttackContext
+{
+    [field: SerializeField]
+    public string attackAnimation { get; private set; }
+
+    [field: SerializeField]
+    public float attackMultiplier { get; private set; }
+
+    [field: SerializeField]
+    public float attackEndTime { get; private set; }
+
+    [field: SerializeField]
+    public float attackColliderStartTime { get; private set; }
+
+    [field: SerializeField]
+    public float attackColliderEndTime { get; private set; }
+
+
+    [field: SerializeField]
+    public bool pushBack { get; private set; }
+}
+
 public class PlayerController : BaseNPCGameUnitController
 {
     [field: SerializeField]
-    public Collider attackHitBox { get; private set; }
+    public WeaponController rightHandWeapon { get; private set; }
 
     [field: SerializeField]
-    public Collider spinAttackHitBox { get; private set; }
+    public WeaponController leftHandWeapon { get; private set; }
+
+    [field: SerializeField]
+    public Collider targetCollider { get; private set; }
 
     [field: SerializeField]
     public float staminaRegenSpeed { get; private set; }
@@ -19,17 +57,23 @@ public class PlayerController : BaseNPCGameUnitController
     [field: SerializeField]
     public float staminaDrainSpeedWhenGuarding { get; private set; }
 
+    [field: SerializeField]
+    public PlayerAttackContext[] attackContextList { get; private set; }
+
+    [field: SerializeField]
+    public float attackMoveSpeed { get; private set; }
+
     public PlayerProfile playerProfile => GlobalDataManager.Instance.playerProfile;
     public override Sprite face => playerProfile.face;
     public override string name => playerProfile.name;
 
-
-    private PlayerGameUnit _playerData => GlobalDataManager.Instance.gameData.playerData;
+    public PlayerGameUnit playerUnit { get; private set; }
+    public PlayerData playerData => GlobalDataManager.Instance.gameData.playerData;
     public PlayerUIController playerUIController { get; private set; }
     public PlayerInput playerInput { get; private set; }
     public InputAction actionMove { get; private set; }
     public InputAction actionAction { get; private set; }
-    public InputAction actionAttack { get; private set; }
+//    public InputAction actionAttack { get; private set; }
     public InputAction actionDefend { get; private set; }
 
     private List<TriggerController> _currentTriggers;
@@ -38,7 +82,9 @@ public class PlayerController : BaseNPCGameUnitController
 
     public PlayerStateMachine stateMachine;
 
-    public PlayerActionController playerTriggeredAction;
+    public PlayerSkillController playerTriggeredAction;
+
+    public PlayerAttackHitContext attackHitContext { get; private set; }
 
     public bool isGuarding { get; private set; }
     protected override void Awake()
@@ -49,7 +95,7 @@ public class PlayerController : BaseNPCGameUnitController
         playerInput = GetComponent<PlayerInput>();
         actionMove = playerInput.actions["Move"];
         actionAction = playerInput.actions["Action"];
-        actionAttack = playerInput.actions["Attack"];
+//        actionAttack = playerInput.actions["Attack"];
         actionDefend = playerInput.actions["Defend"];
 
         //        transform.position = GlobalGameData.Instance.NextScenePlayerPosition;
@@ -58,11 +104,25 @@ public class PlayerController : BaseNPCGameUnitController
         _currentTriggers = new List<TriggerController>();
 
         stateMachine = new PlayerStateMachine(this);
+        attackHitContext = new PlayerAttackHitContext();
+    }
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        PlayerActionManager.Instance.playerController = this;
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        PlayerActionManager.Instance.playerController = null;
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        playerUnit = new PlayerGameUnit(GlobalDataManager.Instance.gameData.playerData);
         transform.position = GlobalDataManager.Instance.NextScenePlayerPosition;
         SetRotation(GlobalDataManager.Instance.NextScenePlayerRotation);
         characterController.enabled = true;
@@ -87,27 +147,14 @@ public class PlayerController : BaseNPCGameUnitController
         isGuarding = actionDefend.ReadValue<float>() > 0.5f;
         if (isGuarding)
         {
-            _playerData.stamina -= staminaDrainSpeedWhenGuarding * Time.deltaTime;
+            playerUnit.Stamina.value -= staminaDrainSpeedWhenGuarding * Time.deltaTime;
         }
         else
         {
-            _playerData.stamina += staminaRegenSpeed * Time.deltaTime;
-
+            playerUnit.Stamina.value += staminaDrainSpeedWhenGuarding * Time.deltaTime;
         }
         stateMachine.Update();
 
-        if (actionAction.triggered)
-        {
-            NPCController npc = GetCurrentNPCTarget();
-            if (npc != null)
-            {
-                npc.RunBehaviour();
-            }
-            else if (_currentTriggers.Count > 0)
-            {
-                _currentTriggers[0].Invoke();
-            }
-        }
         /*
         if (_actionAttack.triggered)
         {
@@ -191,14 +238,15 @@ public class PlayerController : BaseNPCGameUnitController
 
     public void OnHit(int damage)
     {
+        Debug.LogFormat("OnHit {0}", damage);
         if (isGuarding)
         {
-            _playerData.hp -= 1;
-            _playerData.stamina -= damage - 1;
+            playerUnit.HP.value -= 1;
+            playerUnit.Stamina.value -= damage - 1;
         }
         else
         {
-            _playerData.hp -= damage;
+            playerUnit.HP.value -= damage;
         }
         stateMachine.ChangeState(stateMachine.PlayerFlinchState);
     }
@@ -217,15 +265,21 @@ public class PlayerController : BaseNPCGameUnitController
         }
         foreach (EnemyController enemy in enemies)
         {
-            enemy.OnHit(_playerData.attack);
+            enemy.OnHit(playerUnit.Attack.value, 1);
         }
     }
 
-    public bool TryAction(int staminaCost)
+    public bool CheckStaminaCost(int staminaCost)
     {
-        if (_playerData.stamina >= staminaCost)
+//        Debug.LogFormat("CheckStaminaCost cost {0} stamina {1}", staminaCost, playerUnit.Stamina.value);
+        return playerUnit.Stamina.value >= staminaCost;
+    }
+
+    public bool PayStaminaCost(int staminaCost)
+    {
+        if (CheckStaminaCost(staminaCost))
         {
-            _playerData.stamina -= staminaCost;
+            playerUnit.Stamina.value -= staminaCost;
             return true;
         }
         return false;
@@ -233,7 +287,7 @@ public class PlayerController : BaseNPCGameUnitController
 
     public void GainExp(int exp)
     {
-        _playerData.exp += exp;
+        playerData.Exp.value += exp;
     }
 
     public bool hasTriggerController => _currentTriggers.Count > 0;
@@ -268,8 +322,14 @@ public class PlayerController : BaseNPCGameUnitController
         }
     }
 
+    public void RegisterAttackHitContext(bool attackOnce)
+    {
+        ++attackHitContext.attackId;
+        attackHitContext.attackOnce = attackOnce;
+    }
+
     public void EnableSpinAttackHitBox(bool enable)
     {
-        spinAttackHitBox.enabled = enable;
+//        spinAttackHitBox.enabled = enable;
     }
 }

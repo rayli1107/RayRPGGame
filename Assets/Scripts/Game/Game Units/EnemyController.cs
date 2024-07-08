@@ -12,36 +12,44 @@ public enum EnemyMoveBehavior
 
 public class EnemyController : BaseNPCGameUnitController
 {
-    [SerializeField]
-    private EnemyProfile _enemyProfile;
-    [SerializeField]
-    private Collider _attackHitBox;
+    [field: SerializeField]
+    public EnemyProfile enemyProfile { get; private set; }
+    [field: SerializeField]
+    public Collider attackHitBox { get; private set; }
+    [field: SerializeField]
+    public float idleDuration { get; private set; }
 
-    [SerializeField]
-    private float _idleDuration = 2f;
-    public float idleDuration => _idleDuration;
+    [field: SerializeField]
+    public float attackCooldown { get; private set; }
 
-    [SerializeField]
-    private float _attackCooldown = 2f;
-    public float attackCooldown => _attackCooldown;
-
-    [SerializeField]
-    private float _minWanderDistance = 3f;
-    [SerializeField]
-    private float _maxWanderDistance = 10f;
-    [SerializeField]
-    private float _noticeDistance = 5f;
+    [field: SerializeField]
+    public float minWanderDistance { get; private set; }
+    [field: SerializeField]
+    public float maxWanderDistance { get; private set; }
+    [field: SerializeField]
+    public float noticeDistance { get; private set; }
 
     public Vector3 initialPosition { get; private set; }
     public EnemyStateMachine stateMachine { get; private set; }
 
     public EnemyGameUnit gameUnit { get; private set; }
 
+    private int _lastHitAttackId;
+
+    public EnemyController() : base()
+    {
+        idleDuration = 2;
+        attackCooldown = 2;
+        minWanderDistance = 3;
+        maxWanderDistance = 15;
+        noticeDistance = 5;
+    }
+
     protected override void Awake()
     {
         base.Awake();
         initialPosition = transform.position;
-        gameUnit = new EnemyGameUnit(_enemyProfile);
+        gameUnit = new EnemyGameUnit(enemyProfile);
         stateMachine = new EnemyStateMachine(this);
 
         GetComponent<EnemyUIController>().gameUnit = gameUnit; 
@@ -50,6 +58,7 @@ public class EnemyController : BaseNPCGameUnitController
     // Start is called before the first frame update
     void Start()
     {
+        _lastHitAttackId = 0;
         stateMachine.Start(null);
     }
 
@@ -64,11 +73,11 @@ public class EnemyController : BaseNPCGameUnitController
         Vector3 delta = transform.position - initialPosition;
         delta.y = 0;
         float distance = delta.magnitude;
-        if (distance >= _maxWanderDistance)
+        if (distance >= maxWanderDistance)
         {
             return EnemyMoveBehavior.FORCED_RETURN;
         }
-        else if (distance >= _minWanderDistance)
+        else if (distance >= minWanderDistance)
         {
             return EnemyMoveBehavior.SHOULD_RETURN;
         }
@@ -81,27 +90,35 @@ public class EnemyController : BaseNPCGameUnitController
     public bool CanNoticePlayer() {
         Vector3 delta = transform.position - player.transform.position;
         delta.y = 0;
-        return delta.magnitude <= _noticeDistance;
+        return delta.magnitude <= noticeDistance;
     }
 
     public bool CanHitPlayer()
     {
-        return _attackHitBox.bounds.Intersects(
+        return attackHitBox.bounds.Intersects(
             player.characterController.bounds);
     }
 
-    public void OnHit(int damage)
+    public void OnHit(int damage, int staggerDamage)
     {
-        gameUnit.hp -= damage;
-        if (gameUnit.hp <= 0)
+        Debug.LogFormat("OnHit {0} {1}", damage, staggerDamage);
+        int multiplier = gameUnit.IsStaggered ? 2 : 1;
+        gameUnit.HP.value -= damage * multiplier;
+
+        if (!gameUnit.IsStaggered)
         {
-            player.GainExp(gameUnit.exp);
-            GlobalDataManager.Instance.gameData.RegisterMonsterKill(_enemyProfile.id);
+            gameUnit.Stagger.value += staggerDamage;
+        }
+
+        if (gameUnit.HP.value <= 0)
+        {
+            player.GainExp(gameUnit.Exp.value);
+            GlobalDataManager.Instance.gameData.RegisterMonsterKill(enemyProfile.id);
             stateMachine.ChangeState(stateMachine.EnemyDeadState);
         }
-        else
+        else if (gameUnit.Stagger.value >= gameUnit.Stagger.maxValue)
         {
-            stateMachine.ChangeState(stateMachine.EnemyFlinchedState);
+            stateMachine.ChangeState(stateMachine.EnemyStaggeredState);
         }
     }
 
@@ -139,9 +156,14 @@ public class EnemyController : BaseNPCGameUnitController
     protected override void OnTriggerEnter(Collider other)
     {
         base.OnTriggerEnter(other);
-        if (other == player.spinAttackHitBox)
+        if (other == player.rightHandWeapon.attackHitBox)
         {
-            OnHit(GlobalDataManager.Instance.gameData.playerData.attack);
+            if (_lastHitAttackId != player.attackHitContext.attackId ||
+                !player.attackHitContext.attackOnce)
+            {
+                OnHit(GlobalDataManager.Instance.gameData.playerData.Attack.value, 1);
+                _lastHitAttackId = player.attackHitContext.attackId;
+            }
         }
     }
 }

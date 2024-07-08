@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08f18b3083a668d4baa82d41392574be, type: 3}
+  m_Name: Stamina Potion
+  m_EditorClassIdentifier: 
+  <id>k__BackingField: 75f45b5b-b664-4f8b-8601-135cefb9d985
+  <name>k__BackingField: Stamina Potion
+  <sprite>k__BackingField: {fileID: 21300000, guid: 805736230f06ac449a72b0ecb951e522, type: 3}
+  <itemType>k__BackingField: 0
+  <hpRestoredFlat>k__BackingField: 0
+  <staminaRestoredFlat>k__BackingField: 5
+  <maxStack>k__BackingField: 99

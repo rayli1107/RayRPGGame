@@ -12,6 +12,9 @@ public class GameUIManager : MonoBehaviour
     private TextMeshProUGUI _textQuickMessage;
 
     [SerializeField]
+    private TextMeshProUGUI _textCoin;
+
+    [SerializeField]
     private RectTransform _panelModalBackground;
 
     [SerializeField]
@@ -25,6 +28,9 @@ public class GameUIManager : MonoBehaviour
 
     [SerializeField]
     private PlayerActionUIController _prefabPlayerActionUIController;
+
+    [field: SerializeField]
+    public PlayerUIController PlayerHeader { get; private set; }
 
     public static GameUIManager Instance;
 
@@ -47,9 +53,25 @@ public class GameUIManager : MonoBehaviour
         {
             PlayerActionUIController controller = Instantiate(
                 _prefabPlayerActionUIController, _playerActionHotkeyPanel.transform);
-            controller.playerActionIndex = i;
+            controller.playerActionIndex = i + 1;
             controller.playerAction = PlayerActionManager.Instance.playerHotkeyActions[i];
             controller.gameObject.SetActive(true);
+        }
+    }
+
+    private void OnEnable()
+    {
+        if (GlobalDataManager.Instance != null)
+        {
+            GlobalDataManager.Instance.gameData.inventory.updateAction += onUpdate;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (GlobalDataManager.Instance != null)
+        {
+            GlobalDataManager.Instance.gameData.inventory.updateAction -= onUpdate;
         }
     }
 
@@ -115,5 +137,10 @@ public class GameUIManager : MonoBehaviour
         _messageBoxController.message = message;
         _messageBoxController.messageBoxHandler = handler;
         _messageBoxController.gameObject.SetActive(true);
+    }
+
+    private void onUpdate()
+    {
+        _textCoin.text = GlobalDataManager.Instance.gameData.inventory.coins.ToString();
     }
 }

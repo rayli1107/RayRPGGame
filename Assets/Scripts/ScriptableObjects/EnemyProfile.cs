@@ -18,5 +18,11 @@ namespace ScriptableObjects
 
         [field: SerializeField]
         public int exp { get; private set; }
+
+        [field: SerializeField]
+        public int staggerValue { get; private set; }
+
+        [field: SerializeField]
+        public int staggerDuration { get; private set; }
     }
 }

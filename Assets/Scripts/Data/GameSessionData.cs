@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 [Serializable]
 public class QuestTracker
 {
@@ -46,7 +45,10 @@ public class MonsterKillCounter : SerializedDictionary<string, int> { }
 public class GameSessionData
 {
     [field: SerializeField]
-    public PlayerGameUnit playerData { get; private set; }
+    public PlayerData playerData { get; private set; }
+
+    [field: SerializeField]
+    public Inventory inventory { get; private set; }
 
     [field: SerializeField]
     public List<QuestTracker> currentQuests { get; private set; }
@@ -59,7 +61,8 @@ public class GameSessionData
 
     public GameSessionData(PlayerProfile profile)
     {
-        playerData = new PlayerGameUnit(profile);
+        playerData = new PlayerData(profile);
+        inventory = new Inventory();
         currentQuests = new List<QuestTracker>();
         completedQuests = new List<string>();
         monsterKillCounter = new MonsterKillCounter();

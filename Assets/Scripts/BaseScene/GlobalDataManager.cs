@@ -12,6 +12,9 @@ public class GlobalDataManager : MonoBehaviour
     [field: SerializeField]
     public GameSessionData gameData { get; private set; }
 
+    [field: SerializeField]
+    public List<ItemStack> startingItems { get; private set; }
+
     public Vector3 NextScenePlayerPosition;
     public Quaternion NextScenePlayerRotation;
 
@@ -29,6 +32,10 @@ public class GlobalDataManager : MonoBehaviour
     void Start()
     {
         gameData = new GameSessionData(playerProfile);
+        foreach (ItemStack stack in startingItems)
+        {
+            gameData.inventory.AddItem(stack.itemId, stack.itemCount);
+        }
         initialized = true;
     }
 

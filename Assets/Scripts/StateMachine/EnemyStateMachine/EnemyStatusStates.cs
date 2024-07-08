@@ -16,7 +16,7 @@ namespace StateMachine
         public override void EnterState(StateMachineParameter param)
         {
             base.EnterState(param);
-            enemyController.animator.SetTrigger(_animatorParameterIdFlinched);
+            animator.SetTrigger(_animatorParameterIdFlinched);
             _flinched = false;
             enemyController.RotateTowards(player.transform.position);
         }
@@ -27,7 +27,7 @@ namespace StateMachine
 
             enemyController.FlinchBackwards();
 
-            AnimatorStateInfo stateInfo = enemyController.animator.GetCurrentAnimatorStateInfo(0);
+            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
             bool done = _flinched && stateInfo.shortNameHash != _animatorStateIdFlinched;
             _flinched = stateInfo.shortNameHash == _animatorStateIdFlinched;
 
@@ -58,7 +58,7 @@ namespace StateMachine
         {
             base.EnterState(param);
             enemyController.canTrigger = false;
-            enemyController.animator.SetTrigger(_animatorParameterIdDead);
+            animator.SetTrigger(_animatorParameterIdDead);
         }
 
         public override void Update()
@@ -67,6 +67,40 @@ namespace StateMachine
             if (Time.time - stateStartTime > 1f)
             {
                 Object.Destroy(enemyController.gameObject);
+            }
+        }
+    }
+
+    public class EnemyStaggeredState : AbstractEnemyState
+    {
+        private int _animatorParameterIdFlinched;
+
+        public EnemyStaggeredState(EnemyStateMachine stateMachine) : base(stateMachine)
+        {
+            _animatorParameterIdFlinched = Animator.StringToHash("Flinched");
+        }
+
+        public override void EnterState(StateMachineParameter param)
+        {
+            base.EnterState(param);
+            animator.SetBool(_animatorParameterIdFlinched, true);
+            enemyUnit.StaggerDuration.value = enemyUnit.StaggerDuration.maxValue;
+        }
+
+        public override void ExitState()
+        {
+            base.ExitState();
+            animator.SetBool(_animatorParameterIdFlinched, true);
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            enemyUnit.StaggerDuration.value -= Time.deltaTime;
+            if (enemyUnit.StaggerDuration.value <= 0f)
+            {
+                enemyController.gameUnit.Stagger.value = 0;
+                stateMachine.ChangeState(stateMachine.EnemyIdleState);
             }
         }
     }

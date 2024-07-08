@@ -64,7 +64,7 @@ namespace StateMachine
 
         public override void Update()
         {
-            enemyController.MoveTowards(enemyController.initialPosition);
+            enemyController.MoveTowards(enemyController.initialPosition, enemyController.moveSpeed);
             base.Update();
         }
 
@@ -120,7 +120,7 @@ namespace StateMachine
 
         public override void Update()
         {
-            enemyController.MoveTowards(player.transform.position);
+            enemyController.MoveTowards(player.transform.position, enemyController.moveSpeed);
             Vector3 delta = enemyController.transform.position - player.transform.position;
             delta.y = 0;
             base.Update();

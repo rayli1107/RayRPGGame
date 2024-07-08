@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <id>k__BackingField: 907918e7-4a65-4f5f-9f8e-3ecb99bf727a
   <name>k__BackingField: Slime
-  <hp>k__BackingField: 4
+  <hp>k__BackingField: 50
   <damage>k__BackingField: 2
   <canFlinch>k__BackingField: 1
   <exp>k__BackingField: 1
+  <staggerValue>k__BackingField: 5
+  <staggerDuration>k__BackingField: 5

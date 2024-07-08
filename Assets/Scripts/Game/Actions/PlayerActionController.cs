@@ -6,6 +6,7 @@ using UnityEngine;
 public enum PlayerTriggeredActionType
 {
     NONE,
+    ROLL,
     ATTACK,
     SPIN_ATTACK
 }
@@ -16,20 +17,10 @@ public class PlayerActionController : MonoBehaviour
     public Action updateAction;
 
     [field: SerializeField]
-    public Sprite sprite { get; private set; }
-
-
-    [field: SerializeField]
-    public int staminaCost { get; private set; }
+    public bool autoFinishInvoke { get; private set; }
 
     [field: SerializeField]
     public float coolDown { get; private set; }
-
-    [field: SerializeField]
-    public PlayerTriggeredActionType actionType { get; private set; }
-
-    [field: SerializeField]
-    public int damage { get; private set; }
 
     private float _cooldownRemaining;
     public float cooldownRemaining
@@ -37,20 +28,28 @@ public class PlayerActionController : MonoBehaviour
         get => _cooldownRemaining;
         set
         {
+            if (value > 0)
+            {
+                Debug.LogFormat("Cooldown Remaining = {0}", value);
+            }
             _cooldownRemaining = value;
             updateAction?.Invoke();
         }
     }
 
-    private PlayerGameUnit _playerData => GlobalDataManager.Instance.gameData.playerData;
-    public bool available => _cooldownRemaining <= 0f && staminaCost <= _playerData.stamina;
+    public virtual Sprite sprite => null;
+    public virtual bool hasStackableCount => false;
 
     private bool _isTriggered;
 
-
-    public void Trigger()
+    public PlayerActionController()
     {
-        if (available)
+        autoFinishInvoke = true;
+    }
+
+    public void Trigger(PlayerController player)
+    {
+        if (IsAvailable(player))
         {
             _isTriggered = true;
         }
@@ -71,9 +70,27 @@ public class PlayerActionController : MonoBehaviour
         }
     }
 
+    public void InvokeIfAvailable(PlayerController player)
+    {
+        if (IsAvailable(player))
+        {
+            Invoke(player);
+        }
+    }
+
     protected virtual void Invoke(PlayerController player)
     {
 
+    }
+
+    public virtual void FinishInvoke(PlayerController player)
+    {
+
+    }
+
+    public virtual bool IsAvailable(PlayerController player)
+    {
+        return _cooldownRemaining <= 0f;
     }
 
     public void EnterCooldown()
@@ -84,5 +101,10 @@ public class PlayerActionController : MonoBehaviour
     private void Update()
     {
         cooldownRemaining = Mathf.Max(cooldownRemaining - Time.deltaTime, 0f);
+    }
+
+    public virtual int GetStackCount()
+    {
+        return 0;
     }
 }

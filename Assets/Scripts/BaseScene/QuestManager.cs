@@ -83,6 +83,9 @@ public class QuestManager : MonoBehaviour
             {
                 _gameData.completedQuests.Add(quest.id);
             }
+
+            _gameData.playerData.Exp.value += quest.questRewardExp;
+            _gameData.inventory.coins += quest.questRewardCoin;
         }
 
         updateAction?.Invoke();

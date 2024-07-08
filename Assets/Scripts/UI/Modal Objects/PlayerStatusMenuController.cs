@@ -39,17 +39,17 @@ public class PlayerStatusMenuController : MonoBehaviour
 
 
     private PlayerController _playerController => GameController.Instance.player;
-    private PlayerGameUnit _playerData => GlobalDataManager.Instance.gameData.playerData;
+    private PlayerData _playerData => GlobalDataManager.Instance.gameData.playerData;
 
     private int _allocatedHP;
     private int _allocatedStamina;
     private int _allocatedAttack;
     private int _spentExp;
-    private int _actualHP => _playerData.maxHp + _allocatedHP * ProgressionUtil.statHpMultiplier;
-    private int _actualStamina => _playerData.maxStamina + _allocatedStamina * ProgressionUtil.statStaminaMultiplier;
-    private int _actualAttack => _playerData.attack + _allocatedAttack * ProgressionUtil.statAttackMultiplier;
-    private int _actualLevel => _playerData.level + _allocatedAttack + _allocatedHP + _allocatedStamina;
-    private int _actualExp => _playerData.exp - _spentExp;
+    private int _actualHP => _playerData.HP.value + _allocatedHP * ProgressionUtil.statHpMultiplier;
+    private int _actualStamina => _playerData.Stamina.value + _allocatedStamina * ProgressionUtil.statStaminaMultiplier;
+    private int _actualAttack => _playerData.Attack.value + _allocatedAttack * ProgressionUtil.statAttackMultiplier;
+    private int _actualLevel => _playerData.Level.value + _allocatedAttack + _allocatedHP + _allocatedStamina;
+    private int _actualExp => _playerData.Exp.value - _spentExp;
 
     private void OnEnable()
     {
@@ -72,13 +72,11 @@ public class PlayerStatusMenuController : MonoBehaviour
 
     private void OnDisable()
     {
-        _playerData.maxHp = _actualHP;
-        _playerData.hp = _actualHP;
-        _playerData.maxStamina = _actualStamina;
-        _playerData.stamina = _actualStamina;
-        _playerData.attack = _actualAttack;
-        _playerData.level = _actualLevel;
-        _playerData.exp = _actualExp;
+        _playerData.HP.value = _actualHP;
+        _playerData.Stamina.value = _actualStamina;
+        _playerData.Attack.value = _actualAttack;
+        _playerData.Level.value = _actualLevel;
+        _playerData.Exp.value = _actualExp;
     }
 
     private void updateStatus()

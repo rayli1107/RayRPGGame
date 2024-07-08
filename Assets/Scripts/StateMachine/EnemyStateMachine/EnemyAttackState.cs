@@ -32,7 +32,7 @@ namespace StateMachine
             {
                 if (enemyController.CanHitPlayer())
                 {
-                    player.OnHit(enemyController.gameUnit.attack);
+                    player.OnHit(enemyController.gameUnit.Attack.value);
                 }
                 attacked = true;
             }

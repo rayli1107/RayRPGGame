@@ -12,6 +12,9 @@ public class GameController : MonoBehaviour
     [field: SerializeField]
     public CinemachineVirtualCamera virtualCamera { get; private set; }
 
+    [SerializeField]
+    private float _timeScale = 1.0f;
+
     public static GameController Instance;
 
     public System.Random Random { get; private set; }
@@ -20,6 +23,11 @@ public class GameController : MonoBehaviour
     {
         Instance = this;
         Random = new System.Random(System.Guid.NewGuid().GetHashCode());
+    }
+
+    private void OnEnable()
+    {
+        Time.timeScale = _timeScale;
     }
 
     private void OnDestroy()
@@ -38,6 +46,9 @@ public class GameController : MonoBehaviour
 
         virtualCamera.Follow = player.transform;
         virtualCamera.LookAt = player.transform;
+
+        GameUIManager.Instance.PlayerHeader.playerData = GlobalDataManager.Instance.gameData.playerData;
+        GameUIManager.Instance.PlayerHeader.playerController = player;
     }
 
     // Update is called once per frame

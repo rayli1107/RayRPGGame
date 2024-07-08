@@ -18,6 +18,8 @@ public class PlayerActionUIController : MonoBehaviour
     [field: SerializeField]
     private TextMeshProUGUI _labelItemCount;
 
+    private PlayerController _playerController => GameController.Instance.player;
+
     private PlayerActionController _playerAction;
     public PlayerActionController playerAction
     {
@@ -28,6 +30,7 @@ public class PlayerActionUIController : MonoBehaviour
             {
                 _playerAction = value;
                 _spriteAction.sprite = playerAction.sprite;
+                _labelItemCount.enabled = playerAction.hasStackableCount;
             }
         }
     }
@@ -47,7 +50,7 @@ public class PlayerActionUIController : MonoBehaviour
     }
 
     private Button _buttonSkill;
-
+    private GameSessionData _gameData => GlobalDataManager.Instance.gameData;
     private void Awake()
     {
         _buttonSkill = GetComponent<Button>();
@@ -58,7 +61,7 @@ public class PlayerActionUIController : MonoBehaviour
         if (playerAction != null)
         {
             playerAction.updateAction += onUpdate;
-            GlobalDataManager.Instance.gameData.playerData.updateAction += onUpdate;
+            _gameData.inventory.updateAction += onUpdate;
             onUpdate();
         }
     }
@@ -68,7 +71,7 @@ public class PlayerActionUIController : MonoBehaviour
         if (playerAction != null)
         {
             playerAction.updateAction -= onUpdate;
-            GlobalDataManager.Instance.gameData.playerData.updateAction -= onUpdate;
+            _gameData.inventory.updateAction -= onUpdate;
         }
     }
 
@@ -83,11 +86,15 @@ public class PlayerActionUIController : MonoBehaviour
         {
             _imageFill.fillAmount = playerAction.cooldownRemaining / playerAction.coolDown;
         }
-        _buttonSkill.interactable = playerAction.available;
+        if (playerAction.hasStackableCount)
+        {
+            _labelItemCount.text = playerAction.GetStackCount().ToString();
+        }
+        _buttonSkill.interactable = playerAction.IsAvailable(_playerController);
     }
 
     public void onClick()
     {
-        playerAction.Trigger();
+        playerAction.Trigger(_playerController);
     }
 }

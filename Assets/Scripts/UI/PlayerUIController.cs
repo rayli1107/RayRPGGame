@@ -14,70 +14,85 @@ public class PlayerUIController : MonoBehaviour
     [SerializeField]
     private Slider _sliderExp;
 
-    private PlayerGameUnit _playerData => GlobalDataManager.Instance.gameData.playerData;
-    private PlayerController _player => GameController.Instance.player;
-
-    private void Awake()
+    private PlayerData _playerData;
+    public PlayerData playerData
     {
-        if (GlobalDataManager.Instance == null)
+        get => _playerData;
+        set
         {
-            enabled = false;
+            if (_playerData != null && value == null)
+            {
+                _playerData.updateAction -= onPlayerDataUpdate;
+            }
+            _playerData = value;
+            if (_playerData != null)
+            {
+                _playerData.updateAction += onPlayerDataUpdate;
+                onPlayerDataUpdate();
+            }
         }
     }
 
-    private void OnEnable()
+    private PlayerController _playerController;
+    public PlayerController playerController
     {
-        if (GlobalDataManager.Instance != null)
+        get => _playerController;
+        set
         {
-            _playerData.updateAction += onStatUpdate;
+            if (_playerController != null && value == null)
+            {
+                _playerController.playerUnit.updateAction -= onStatUpdate;
+                if (_playerFace != null)
+                {
+                    _playerFace.sprite = null;
+                }
+            }
+            _playerController = value;
+            if (_playerController != null)
+            {
+                _playerController.playerUnit.updateAction += onStatUpdate;
+                if (_playerFace != null)
+                {
+                    _playerFace.sprite = _playerController.face;
+                }
+                onStatUpdate();
+            }
         }
-        onStatUpdate();
     }
 
-    private void OnDisable()
+    private void onPlayerDataUpdate()
     {
-        if (GlobalDataManager.Instance != null)
+        if (_sliderExp != null)
         {
-            _playerData.updateAction -= onStatUpdate;
-        }
-    }
-
-    private void Update()
-    {
-        if (_playerFace.sprite == null && _player != null)
-        {
-            _playerFace.sprite = _player.face;
+            _sliderExp.maxValue = ProgressionUtil.GetNextLevelExp(_playerData.Level.value);
+            _sliderExp.value = _playerData.Exp.value;
         }
     }
 
     private void onStatUpdate()
     {
+        PlayerGameUnit playerUnit = _playerController.playerUnit;
         if (_sliderHP != null)
         {
-            if (_sliderHP.maxValue != _playerData.maxHp)
+            if (_sliderHP.maxValue != playerUnit.HP.maxValue)
             {
                 RectTransform rt = _sliderHP.GetComponent<RectTransform>();
-                rt.sizeDelta = new Vector2(_playerData.maxHp * 10, rt.sizeDelta.y);
-                _sliderHP.maxValue = _playerData.maxHp;
+                rt.sizeDelta = new Vector2(playerUnit.HP.maxValue * 10, rt.sizeDelta.y);
+                _sliderHP.maxValue = playerUnit.HP.maxValue;
             }
-            _sliderHP.value = _playerData.hp;
+            _sliderHP.value = playerUnit.HP.value;
         }
 
         if (_sliderStamina != null)
         {
-            if (_sliderStamina.maxValue != _playerData.maxStamina)
+            if (_sliderStamina.maxValue != playerUnit.Stamina.maxValue)
             {
                 RectTransform rt = _sliderStamina.GetComponent<RectTransform>();
-                rt.sizeDelta = new Vector2(_playerData.maxStamina * 20, rt.sizeDelta.y);
-                _sliderStamina.maxValue = _playerData.maxStamina;
+                rt.sizeDelta = new Vector2(playerUnit.Stamina.maxValue * 20, rt.sizeDelta.y);
+                _sliderStamina.maxValue = playerUnit.Stamina.maxValue;
             }
-            _sliderStamina.value = _playerData.stamina;
+            _sliderStamina.value = playerUnit.Stamina.value;
         }
 
-        if (_sliderExp != null)
-        {
-            _sliderExp.maxValue = ProgressionUtil.GetNextLevelExp(_playerData.level);
-            _sliderExp.value = _playerData.exp;
-        }
     }
 }

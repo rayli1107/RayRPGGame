@@ -9,6 +9,10 @@ public class EnemyUIController : MonoBehaviour
     private Image _imageTarget;
     [SerializeField]
     private Slider _sliderHP;
+    [SerializeField]
+    private Slider _sliderStagger;
+    [SerializeField]
+    private Slider _sliderStaggerDuration;
 
     private EnemyGameUnit _gameUnit;
     public EnemyGameUnit gameUnit
@@ -31,21 +35,9 @@ public class EnemyUIController : MonoBehaviour
 
     private PlayerController _player => GameController.Instance.player;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private void OnTriggerEnter(Collider other)
     {
-        if (other == _player.attackHitBox)
+        if (other == _player.targetCollider)
         {
             _imageTarget.enabled = true;
         }
@@ -53,7 +45,7 @@ public class EnemyUIController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other == _player.attackHitBox)
+        if (other == _player.targetCollider)
         {
             _imageTarget.enabled = false;
         }
@@ -61,8 +53,35 @@ public class EnemyUIController : MonoBehaviour
 
     private void OnStatUpdate()
     {
-        _sliderHP.minValue = 0;
-        _sliderHP.maxValue = gameUnit.maxHp;
-        _sliderHP.value = gameUnit.hp;
+        if (_sliderHP != null)
+        {
+            _sliderHP.minValue = 0;
+            _sliderHP.maxValue = gameUnit.HP.maxValue;
+            _sliderHP.value = gameUnit.HP.value;
+        }
+
+        bool isStaggered = gameUnit.IsStaggered;
+
+        if (_sliderStagger != null)
+        {
+            _sliderStagger.gameObject.SetActive(!isStaggered);
+            if (!isStaggered)
+            {
+                _sliderStagger.minValue = gameUnit.Stagger.minValue;
+                _sliderStagger.maxValue = gameUnit.Stagger.maxValue;
+                _sliderStagger.value = gameUnit.Stagger.value;
+            }
+        }
+
+        if (_sliderStaggerDuration != null)
+        {
+            _sliderStaggerDuration.gameObject.SetActive(isStaggered);
+            if (isStaggered)
+            {
+                _sliderStaggerDuration.minValue = gameUnit.StaggerDuration.minValue;
+                _sliderStaggerDuration.maxValue = gameUnit.StaggerDuration.maxValue;
+                _sliderStaggerDuration.value = gameUnit.StaggerDuration.value;
+            }
+        }
     }
 }
